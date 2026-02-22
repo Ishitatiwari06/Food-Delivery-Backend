@@ -1,9 +1,16 @@
-import { createUserSerivce } from "../services/auth.service.js";
+import { createUserSerivce, findUserById } from "../services/auth.service.js";
 import { loginUserService } from "../services/auth.service.js";
 
 export const createUser = async (req, res) => {
     try {
-        const { name, location, email, password } = req.body;
+        const { name, location, email, password, id } = req.body;
+        const existingUser = await findUserById(id);
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: "User already exists."
+            });
+        }
         const newuser = await createUserSerivce(name, location, email, password);
         res.status(200).json({
             success: true,
@@ -11,6 +18,7 @@ export const createUser = async (req, res) => {
             data: newuser,
         });
     } catch (error) {
+        console.error("Create User Error:", error);
         res.status(500).json({
             success: false,
             message: "Error creating user",

@@ -1,12 +1,14 @@
 import User from "../models/User.js";
+import bcrypt from "bcryptjs";
 
 export const createUserSerivce = async (name, location, email, password) => {
     try {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt round of 10
         const newuser = await User.create({
             name,
             location,
             email,
-            password,
+            password: hashedPassword,
         });
         return newuser;
     } catch (error) {
@@ -20,11 +22,16 @@ export const loginUserService = async (email, password) => {
         if (!user) {
             throw new Error("User not found");
         }
-        if (user.password !== password) {
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
             throw new Error("Invalid password");
         }
         return user;
     } catch (error) {
         throw error;
     }
+};
+
+export const findUserById = async (id) => {
+    return await User.findById(id);
 };
