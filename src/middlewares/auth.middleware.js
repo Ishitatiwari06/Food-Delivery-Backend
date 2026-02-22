@@ -1,4 +1,5 @@
-import {body, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
+import jwt from "jsonwebtoken";
 
 export const validateUser = [
     body('name').notEmpty().withMessage('Name is required'),
@@ -10,7 +11,7 @@ export const validateUser = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        next();   
+        next();
     }
 ];
 
@@ -20,8 +21,32 @@ export const validateLogin = [
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: "Email or password is incorrect" });
+            return res.status(400).json({
+                success: false,
+                message: errors.array()[0].msg
+            });
         }
-        next();   
+        next();
     }
 ];
+
+// JWT verification middleware
+export const verifyToken = (req, res, next) => {
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "No token provided"
+        });
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: "Invalid token"
+        });
+    }
+};
