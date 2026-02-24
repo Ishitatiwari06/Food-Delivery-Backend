@@ -1,10 +1,11 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
-export const createUserSerivce = async (name, location, email, password) => {
+export const findUserByEmail = async (email) => {
+    return await User.findOne({ email });
+};
+
+export const createUserService = async (name, location, email, password) => {
     try {
-        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password with a salt round of 10
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newuser = await User.create({
             name,
             location,
@@ -23,6 +24,9 @@ export const loginUserService = async (email, password) => {
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error("User not found");
+        }
+        if (!user.isVerified) {
+            throw new Error("User is not verified. Please verify your email before logging in.");
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
@@ -43,4 +47,8 @@ export const loginUserService = async (email, password) => {
 export const findUserById = async (id) => {
     return await User.findById(id);
 };
+
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
