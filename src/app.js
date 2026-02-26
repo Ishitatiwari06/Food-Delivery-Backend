@@ -3,6 +3,7 @@ import authRoutes from "./routes/auth.route.js";
 import cors from "cors";
 import displayRoutes from "./routes/display.route.js";
 import cartRoutes from "./routes/cart.route.js";
+import orderRoutes from "./routes/order.route.js";
 
 const app = express();
 app.use(express.json());
@@ -16,4 +17,5 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" })); //it allows serv
 app.use("/api", authRoutes);
 app.use("/api", displayRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api", orderRoutes);
 export default app;
