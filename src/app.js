@@ -1,9 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import authRoutes from "./routes/auth.route.js";
 import cors from "cors";
 import displayRoutes from "./routes/display.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import orderRoutes from "./routes/order.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 
 const app = express();
 app.use(express.json());
@@ -18,4 +21,5 @@ app.use("/api", authRoutes);
 app.use("/api", displayRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api", orderRoutes);
+app.use("/api/payment", paymentRoutes);
 export default app;
