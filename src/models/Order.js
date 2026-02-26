@@ -40,6 +40,14 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    totalAmount: {
+      type: Number,
+      required: false,
+    },
+    status: {
+      type: String,
+      default: "Processing",
+    },
   }
 );
 
