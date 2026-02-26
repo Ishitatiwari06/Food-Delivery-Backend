@@ -40,22 +40,25 @@ export const verifyPaymentService = async (
   }
 
   const cart = await Cart.findOne({ user: userId });
+  console.log("[verifyPaymentService] Cart found for user:", userId, cart);
 
   const totalAmount = cart.items.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  await Order.create({
+  const order = await Order.create({
     user: userId,
     order_data: cart.items,
     order_date: new Date().toDateString(),
     totalAmount,
     status: "Paid",
   });
+  console.log("[verifyPaymentService] Order created:", order);
 
   cart.items = [];
   await cart.save();
+  console.log("[verifyPaymentService] Cart cleared after order.");
 
   return true;
 };
