@@ -11,7 +11,7 @@ import paymentRoutes from "./routes/payment.route.js";
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://food-delivery-frontend-rho-pink.vercel.app/",
     credentials: true,
 }),
 ); //Required for frontend-backend communication
