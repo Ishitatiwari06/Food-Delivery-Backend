@@ -11,9 +11,12 @@ import paymentRoutes from "./routes/payment.route.js";
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "https://food-delivery-frontend-rho-pink.vercel.app",
+    origin: [
+        "https://food-delivery-frontend-rho-pink.vercel.app",
+        "http://localhost:5173"
+    ],
     credentials: true,
-})); //Required for frontend-backend communication
+})); // Allow deployed frontend and local dev
 
 app.use(express.urlencoded({ extended: true, limit: "10mb" })); //it allows server to read data from req. Without this req.body will be undefined
 app.use("/api", authRoutes);
