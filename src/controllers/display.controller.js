@@ -2,19 +2,11 @@ import mongoose from "mongoose";
 
 export const getFoodData = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
-
-        // Fetch paginated food items
+        // Fetch all food items
         const foodItemsCollection = mongoose.connection.db.collection("food_items");
-        const total = await foodItemsCollection.countDocuments();
-        const foodItems = await foodItemsCollection.find({})
-            .skip(skip)
-            .limit(limit)
-            .toArray();
+        const foodItems = await foodItemsCollection.find({}).toArray();
 
-        // Fetch all categories (not paginated)
+        // Fetch all categories
         const foodCategory = await mongoose.connection.db
             .collection("foodCategory")
             .find({})
@@ -22,10 +14,7 @@ export const getFoodData = async (req, res) => {
 
         res.json({
             foodItems,
-            foodCategory,
-            total,
-            page,
-            limit
+            foodCategory
         });
     } catch (error) {
         console.error("Error fetching food data:", error.message);
